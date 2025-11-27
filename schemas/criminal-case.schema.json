@@ -1,0 +1,337 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$defs": {
+        "Address": {
+            "title": "Address",
+            "description": "Schema for representing a physical address",
+            "type": "object",
+            "properties": {
+                "raw": {
+                    "type": "string",
+                    "description": "Raw address string - unparsed"
+                },
+                "addressLineOne": {
+                    "type": "string",
+                    "description": "Primary street address"
+                },
+                "addressLineTwo": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "Secondary street address"
+                },
+                "city": {
+                    "type": "string",
+                    "description": "City name"
+                },
+                "county": {
+                    "type": "string",
+                    "description": "County name"
+                },
+                "state": {
+                    "type": "string",
+                    "description": "State or province"
+                },
+                "postalCode": {
+                    "type": "string",
+                    "description": "Postal or ZIP code"
+                },
+                "country": {
+                    "type": "string",
+                    "description": "Country name"
+                }
+            },
+            "required": [
+                "raw",
+                "street1",
+                "city",
+                "state",
+                "postalCode",
+                "country"
+            ],
+            "additionalProperties": false
+        },
+        "PersonName": {
+            "title": "PersonName",
+            "description": "Schema for representing a person's name",
+            "type": "object",
+            "properties": {
+                "raw": {
+                    "type": "string",
+                    "description": "Raw full name string, before parsing"
+                },
+                "first": {
+                    "type": "string",
+                    "description": "First/Given name"
+                },
+                "middle": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "Middle name"
+                },
+                "last": {
+                    "type": "string",
+                    "description": "Last/Family name"
+                },
+                "suffix": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "Name suffix"
+                },
+                "prefix": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "Title/Prefix"
+                }
+            },
+            "required": [
+                "first",
+                "last"
+            ],
+            "additionalProperties": false
+        },
+        "Date": {
+            "title": "Date",
+            "description": "Schema for representing a date with year, month, and day components",
+            "type": "object",
+            "properties": {
+                "raw": {
+                    "type": "string",
+                    "description": "Raw date string"
+                },
+                "year": {
+                    "type": "integer",
+                    "description": "Four-digit year",
+                    "minimum": 1000,
+                    "maximum": 9999
+                },
+                "month": {
+                    "type": "integer",
+                    "description": "Month (1-12)",
+                    "minimum": 1,
+                    "maximum": 12
+                },
+                "day": {
+                    "type": "integer",
+                    "description": "Day (1-31)",
+                    "minimum": 1,
+                    "maximum": 31
+                },
+                "iso": {
+                    "type": "string",
+                    "description": "Date in ISO 8601 format"
+                }
+            },
+            "required": [
+                "raw",
+                "year",
+                "month",
+                "day"
+            ],
+            "additionalProperties": false
+        }
+    },
+    "type": "object",
+    "required": [
+        "caseId",
+        "courtName",
+        "caseJurisdiction",
+        "defendant",
+        "charges"
+    ],
+    "properties": {
+        "caseId": {
+            "type": "string",
+            "description": "Unique identifier for the case"
+        },
+        "caseNumber": {
+            "type": "string",
+            "description": "Official court case number (may be the same as caseId)"
+        },
+        "courtName": {
+            "type": "string",
+            "description": "Name of the court"
+        },
+        "caseFileDate": {
+            "$ref": "#/$defs/Date",
+            "description": "Date when the case was filed"
+        },
+        "caseJurisdiction": {
+            "type": "string",
+            "description": "Jurisdiction where the case was (or is being) heard"
+        },
+        "location": {
+            "type": "object",
+            "description": "Location metadata for where the case was filed",
+            "properties": {
+                "state": {
+                    "type": "string",
+                    "description": "ANSI state code representing where the case was filed"
+                },
+                "fipsCode": {
+                    "type": "string",
+                    "description": "Federal Information Processing Standards (FIPS) county code"
+                }
+            },
+            "additionalProperties": false
+        },
+        "defendant": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "$ref": "#/$defs/PersonName",
+                    "description": "Defendant's name"
+                },
+                "dateOfBirth": {
+                    "$ref": "#/$defs/Date",
+                    "description": "Defendant's date of birth"
+                },
+                "gender": {
+                    "type": "string",
+                    "description": "Defendant's gender"
+                },
+                "race": {
+                    "type": "string",
+                    "description": "Defendant's race"
+                },
+                "addresses": {
+                    "type": "array",
+                    "description": "List of defendant's addresses",
+                    "items": {
+                        "$ref": "#/$defs/Address",
+                        "description": "Defendant's address"
+                    }
+                }
+            },
+            "required": [
+                "name",
+                "dateOfBirth",
+                "addresses"
+            ],
+            "additionalProperties": false
+        },
+        "comments": {
+            "type": "string",
+            "description": "Additional case comments (optional)"
+        },
+        "charges": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "type": "object",
+                "required": [
+                    "chargeId",
+                    "chargeCount",
+                    "offenseDescription",
+                    "offenseDate",
+                    "offenseSeverity"
+                ],
+                "properties": {
+                    "chargeId": {
+                        "type": "string",
+                        "description": "Unique identifier for the charge"
+                    },
+                    "chargeCount": {
+                        "type": "string",
+                        "description": "Count number for the charge"
+                    },
+                    "offenseDescription": {
+                        "type": "string",
+                        "description": "A description of the offense, for example \"Assault and Battery\" or \"Burglary\" or \"Drug Possession\""
+                    },
+                    "offenseCode": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "The offense code if available"
+                    },
+                    "offenseDate": {
+                        "$ref": "#/$defs/Date",
+                        "description": "Date when the offense occurred"
+                    },
+                    "offenseSeverity": {
+                        "type": "string",
+                        "description": "Severity level of the offense, for example \"Misdemeanor\" or \"Felony\", or \"Infraction\""
+                    },
+                    "dispositionDescription": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Description of how the charge was disposed"
+                    },
+                    "dispositionDate": {
+                        "oneOf": [
+                            {
+                                "$ref": "#/$defs/Date"
+                            },
+                            {
+                                "type": "null"
+                            }
+                        ],
+                        "description": "Date when the charge was disposed"
+                    },
+                    "sentence": {
+                        "type": "string",
+                        "description": "Sentence of the charge"
+                    },
+                    "comments": {
+                        "type": [
+                            "string",
+                            "null"
+                        ],
+                        "description": "Additional comments about the charge (optional)"
+                    },
+                    "class": {
+                        "type": "string",
+                        "description": "Class of the charge"
+                    },
+                    "subClass": {
+                        "type": "string",
+                        "description": "Subclass of the charge"
+                    },
+                    "metadata": {
+                        "type": "object",
+                        "description": "Metadata about the charge record",
+                        "properties": {
+                            "source": {
+                                "type": "string",
+                                "description": "Source of the data"
+                            },
+                            "sourceId": {
+                                "type": "string",
+                                "description": "Identifier from the source system"
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                },
+                "additionalProperties": false
+            }
+        },
+        "metadata": {
+            "type": "object",
+            "description": "Metadata about the case record",
+            "properties": {
+                "source": {
+                    "type": "string",
+                    "description": "Source of the data"
+                },
+                "sourceId": {
+                    "type": "string",
+                    "description": "Identifier from the source system"
+                }
+            },
+            "additionalProperties": false
+        }
+    },
+    "additionalProperties": false
+}
