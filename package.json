@@ -10,5 +10,8 @@
   "description": "",
   "devDependencies": {
     "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "type-fest": "^5.2.0"
   }
 }
