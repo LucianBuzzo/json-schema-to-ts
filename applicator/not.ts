@@ -2,6 +2,9 @@ import { ExcludeStrict, JsonValue } from "type-fest";
 
 // The "not" keyword cannot be fully expressed in TypeScript for scalar values, as it requires 
 // either a function or new() constructor to correctly narrow/infer the type.
+// Negated Types would help a lot here, but they are not yet available in TypeScript.
+// See:
+// - https://github.com/microsoft/TypeScript/issues/4196
 const notConstSchema = {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "not": {
