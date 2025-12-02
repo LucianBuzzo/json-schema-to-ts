@@ -57,3 +57,8 @@ const anyOfValue4: AnyOfSchema = {
 
 // @ts-expect-error
 const anyOfValue5: AnyOfSchema = "Hello World";
+
+const anyOfValue6: AnyOfSchema = {
+    foo: "Hello",
+    bar: 42,
+};

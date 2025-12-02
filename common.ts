@@ -1,7 +1,3 @@
-export type JsonType =
-  | null
-  | boolean
-  | Record<string, unknown>
-  | unknown[]
-  | number
-  | string;
+type XOR<A, B> =
+  | (A & { [K in keyof B]?: never })
+  | (B & { [K in keyof A]?: never });
